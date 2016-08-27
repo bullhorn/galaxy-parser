@@ -1,0 +1,9 @@
+.idea/
+src/
+
+.editorconfig
+.eslintrc
+.npmignore
+.babelrc
+.gitignore
+.travis.yml
