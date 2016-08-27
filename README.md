@@ -67,3 +67,8 @@ Travis
       - test $TRAVIS_BRANCH = "master" && npm run galaxy $FIREBASE_URL $SLACK_WEB_HOOK $SLACK_CHANNEL
       
 5) Add private environment variables for `FIREBASE_URL`, `SLACK_WEB_HOOK` and `SLACK_CHANNEL` 
+
+## Example Integrations
+
+* [Novo-Elements (JavaScript)](https://github.com/bullhorn/novo-elements/commit/3de0a2032a7c0f96655f3bd0df2d7ee8dc3c7950)
+* [DataLoader (Java)]()

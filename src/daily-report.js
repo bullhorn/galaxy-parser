@@ -65,7 +65,7 @@ function getProjectTable(projects) {
 function getMessage(projects) {
     var message = '*<http://metrics:9002|Daily Galaxy Report>*\n';
     message += getProjectTable(projects);
-    message += '\n_Want your project on here, contact <@jgodi> to learn how!_';
+    message += '\n_Want your project on here? Consult the <https://github.com/jgodi/galaxy-parser/blob/master/README.md|Galaxy Parser> to learn how!_';
     return message;
 }
 
