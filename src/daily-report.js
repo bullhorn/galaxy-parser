@@ -36,7 +36,7 @@ function getProjectTable(projects) {
 
     // Setup the table
     projects.forEach(project => {
-        table.cell('Project', project.name.replace('novo-', '').toUpperCase());
+        table.cell('Project', project.displayName);
         table.cell('Unit Test Coverage', Number(project.coverage.lines.percent), leftAlignPercent);
         table.cell('Delta', project.coverageTrend || '0.00', leftAlignPercent);
         if (project.eslint) {

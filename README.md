@@ -21,6 +21,8 @@ The *bare* minimum to report into galaxy is to have code coverage reporting in o
 
 1) Create a `package.json` / Modify the existing `package.json`
 
+*NOTE:* The `package.json` `name` field is used as the key. Keep it all lower-case with no spaces. I.E `my-project` or `myProject`.
+
 2) Add an entry to the `package.json` for `galaxy`
 
     "galaxy": {
@@ -72,4 +74,6 @@ Travis
 ## Example Integrations
 
 * [Novo-Elements (JavaScript)](https://github.com/bullhorn/novo-elements/commit/3de0a2032a7c0f96655f3bd0df2d7ee8dc3c7950)
-* [DataLoader (Java)]()
+* [DataLoader (Java)](https://github.com/bullhorn/dataloader/commit/7d8e53bc669d7b64717f05353e9d8a4fd862bb40)
+
+*NOTE:* On those, the `galaxy` config is missing the `display` property. This is defaulted to the `package.json` name otherwise if not set.

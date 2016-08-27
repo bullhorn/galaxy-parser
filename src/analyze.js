@@ -113,7 +113,7 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
         if (SLACK_HOOK && SLACK_CHANNEL && deltaCheck(parsed.dashboard, lastRun)) {
             // Create a slack message based on the results
             var message = {
-                text: `New results for <http://metrics:9002/#/project/${packageJSON.name}|${packageJSON.name.toUpperCase().replace('novo-', '')}>, triggered by *${lastCommit.author_name}*`,
+                text: `New results for <http://metrics:9002/#/project/${packageJSON.name}|${parsed.dashboard.displayName}>, triggered by *${lastCommit.author_name}*`,
                 channel: SLACK_CHANNEL,
                 username: 'Galaxy',
                 attachments: formatSlackMessage(parsed.dashboard, lastRun, GALAXY_SETTINGS.threshold),
