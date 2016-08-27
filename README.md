@@ -24,6 +24,7 @@ The *bare* minimum to report into galaxy is to have code coverage reporting in o
 2) Add an entry to the `package.json` for `galaxy`
 
     "galaxy": {
+        "display": "My Project", // display name for galaxy (defaults to package.json name)
         "type": "javascript", // type of the project that we are reporting on (javascript|java|php)
         "goal": 80, // goal set for the unit test coverage number (defaults to 80 if not provided),
         "threshold": 0.15 // threshold to not report changes to slack (defaults to 0.10 if not provided) 

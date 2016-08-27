@@ -91,6 +91,9 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
         }
 
         // Modify the parsed report
+        // Set the name
+        parsed.dashboard.displayName = GALAXY_SETTINGS.display || packageJSON.name;
+        parsed.report.displayName = GALAXY_SETTINGS.display || packageJSON.name;
         // Set the last commit
         parsed.dashboard.commit = lastCommit;
         parsed.report.commit = lastCommit;
