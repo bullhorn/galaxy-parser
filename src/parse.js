@@ -1,6 +1,7 @@
 // APP
 import lcov from './parsers/lcov';
 import jacoco from './parsers/jacoco';
+import jacocoMulti from './parsers/jacoco-multi';
 import eslint from './parsers/eslint';
 import sloc from './parsers/sloc';
 
@@ -21,6 +22,9 @@ async function parse(locations) {
                 case 'jacoco':
                     result = await jacoco(locations[location]);
                     break;
+                case 'jacoco-multi':
+                    result = await jacocoMulti(locations[location]);
+                    break;
                 case 'eslint':
                     result = await eslint(locations[location]);
                     break;
@@ -32,7 +36,7 @@ async function parse(locations) {
             }
 
             // Remap the key to "coverage" if lcov or jacoco
-            if (location === 'lcov' || location === 'jacoco') {
+            if (location === 'lcov' || location === 'jacoco' || location === 'jacoco-multi') {
                 key = 'coverage';
             }
 

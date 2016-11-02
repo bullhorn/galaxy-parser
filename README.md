@@ -34,7 +34,12 @@ The *bare* minimum to report into galaxy is to have code coverage reporting in o
           "eslint": "/coverage/eslint.json", // location of where the eslint.json file is for eslint parsing
           "sloc": "/coverage/sloc.json", // location of where the sloc.json file is for line of code parsing
           "lcov": "/coverage/lcov.info", // location of where the code coverage is saved
-          "jacoco": "/coverage/jacoco.xml" // location of where jacoco saves the xml file
+          "jacoco": "/coverage/jacoco.xml", // location of where jacoco saves the xml file
+          "jacoco-multi": [ // location of multiple small jacoco files to sum up
+            "/coverage/jacoco1.xml",
+            "/coverage/jacoco2.xml",
+            "/coverage/jacoco3.xml"
+          ]
         }
     }
     

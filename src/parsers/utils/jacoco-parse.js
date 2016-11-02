@@ -12,11 +12,11 @@ let format = (report) => {
     var packages = report.package;
     var output = [];
     packages.forEach((pack) => {
-        var cov = pack.sourcefile.map(s=> {
+        var cov = pack.sourcefile.map(s => {
             var fullPath = pack.$.name + '/' + s.$.name;
             var className = fullPath.substring(0, fullPath.lastIndexOf('.'));
 
-            var c = pack.class.filter(cl=> {
+            var c = pack.class.filter(cl => {
                 return cl.$.name === className;
             })[0];
 
@@ -30,8 +30,8 @@ let format = (report) => {
                 functions: {
                     found: Number(functions.$.covered) + Number(functions.$.missed),
                     hit: Number(functions.$.covered),
-                    details: !c.method ? [] : c.method.map(m=> {
-                        var hit = m.counter.some(counter=> {
+                    details: c && c.method ? c.method.map(m => {
+                        var hit = m.counter.some(counter => {
                             return counter.$.type === 'METHOD' && counter.$.covered === '1';
                         });
                         return {
@@ -39,12 +39,12 @@ let format = (report) => {
                             line: Number(m.$.line),
                             hit: hit ? 1 : 0
                         };
-                    })
+                    }) : []
                 },
                 lines: {
                     found: Number(lines.$.covered) + Number(lines.$.missed),
                     hit: Number(lines.$.covered),
-                    details: !s.line ? [] : s.line.map(l=> {
+                    details: !s.line ? [] : s.line.map(l => {
                         return {
                             line: Number(l.$.nr),
                             hit: Number(l.$.ci)
@@ -55,10 +55,10 @@ let format = (report) => {
                     found: Number(branches.$.covered) + Number(branches.$.missed),
                     hit: Number(branches.$.covered),
                     details: !s.line ? [] : [].concat.apply([],
-                        s.line.filter(l=> {
+                        s.line.filter(l => {
                             return Number(l.$.mb) > 0 || Number(l.$.cb) > 0;
                         })
-                            .map(l=> {
+                            .map(l => {
                                 var branches = [];
                                 var count = Number(l.$.mb) + Number(l.$.cb);
 
