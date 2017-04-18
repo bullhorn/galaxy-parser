@@ -47,8 +47,8 @@ function deltaCheck(current, last, threshold) {
         console.log('[Galaxy Parser]: No previous results, skipping slack message');
         return false;
     }
-    // Make sure the coverage changes by at least 0.10%
-    var deltaThreshold = threshold || 0.10;
+    // If there is no threshold, then set to 0 to report all changes!
+    var deltaThreshold = threshold || 0;
     var diff = Math.abs(current.coverage.lines.percent - last.coverage.lines.percent);
     console.log(`[Galaxy Parser]: Results differ by ${diff}%${diff >= deltaThreshold ? ', posting slack message' : ', skipping slack message'}`);
     return diff >= deltaThreshold;
@@ -105,9 +105,13 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
 
         // Upload to firebase
         // Send the dashboard to firebase
-        request.put('https://' + FIREBASE_URL + '/dashboard/' + packageJSON.name + '.json', { json: parsed.dashboard });
+        request.put('https://' + FIREBASE_URL + '/dashboard/' + packageJSON.name + '.json', {
+            json: parsed.dashboard
+        });
         // Send the report to firebase
-        request.post('https://' + FIREBASE_URL + '/' + packageJSON.name + '.json', { json: parsed.report });
+        request.post('https://' + FIREBASE_URL + '/' + packageJSON.name + '.json', {
+            json: parsed.report
+        });
 
         // Send Slack Messages
         if (SLACK_HOOK && SLACK_CHANNEL && deltaCheck(parsed.dashboard, lastRun)) {
@@ -119,7 +123,9 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
                 attachments: formatSlackMessage(parsed.dashboard, lastRun, GALAXY_SETTINGS.threshold),
                 icon_url: 'https://67.media.tumblr.com/avatar_975d849db99f_128.png'
             };
-            request.post('https://hooks.slack.com/services/' + SLACK_HOOK, { json: message });
+            request.post('https://hooks.slack.com/services/' + SLACK_HOOK, {
+                json: message
+            });
         } else {
             console.log('[Galaxy Parser]: Report does not differentiate enough to send slack messages!');
         }

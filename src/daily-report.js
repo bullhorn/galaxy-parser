@@ -37,7 +37,8 @@ function getProjectTable(projects) {
     // Setup the table
     projects.forEach(project => {
         table.cell('Project', project.displayName);
-        table.cell('Unit Test Coverage', Number(project.coverage.lines.percent), leftAlignPercent);
+        table.cell('Current Coverage', Number(project.coverage.lines.percent), leftAlignPercent);
+        table.cell('Higest Coverage', Number(project.coverageHighest), leftAlignPercent);
         table.cell('Delta', project.coverageTrend || '0.00', leftAlignPercent);
         if (project.eslint) {
             table.cell('Linting', project.eslint.warnings + project.eslint.errors, leftAlign);
@@ -96,13 +97,16 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
                         if (projects[key]) {
                             var lastCoverage = lastRun[key].coverage.lines.percent;
                             var newCoverage = projects[key].coverage.lines.percent;
-                            if (lastCoverage > newCoverage) {
-                                projects[key].coverageTrend = '-' + (lastCoverage - newCoverage).toFixed(2);
+                            var highestCoverage = lastRun[key].coverageHighest || 0;
+                            if (lastCoverage > newCoverage && highestCoverage > newCoverage) {
+                                let compare = highestCoverage > newCoverage ? highestCoverage : lastCoverage;
+                                projects[key].coverageTrend = '-' + (compare - newCoverage).toFixed(2);
                             } else if (newCoverage > lastCoverage) {
                                 projects[key].coverageTrend = '+' + (newCoverage - lastCoverage).toFixed(2);
                             } else {
                                 projects[key].coverageTrend = '0.00';
                             }
+                            projects[key].coverageHighest = newCoverage > highestCoverage ? newCoverage : highestCoverage;
                         }
                     }
                 }
@@ -126,11 +130,15 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
                     username: 'Galaxy',
                     icon_url: 'https://67.media.tumblr.com/avatar_975d849db99f_128.png'
                 };
-                request.post('https://hooks.slack.com/services/' + SLACK_HOOK, { json: message });
+                request.post('https://hooks.slack.com/services/' + SLACK_HOOK, {
+                    json: message
+                });
             }
 
             // Save the results to get trends
-            jsonfile.writeFileSync(LAST_RUN_FILE, projects, { spaces: 2 });
+            jsonfile.writeFileSync(LAST_RUN_FILE, projects, {
+                spaces: 2
+            });
         } else {
             console.error('[Daily Report] Error:', error);
         }
