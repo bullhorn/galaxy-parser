@@ -49,14 +49,14 @@ function getProjectTable(projects) {
     });
 
     // Create the avg for coverage
-    table.total('Unit Test Coverage', {
+    table.total('Current Coverage', {
         printer: Table.aggr.printer('Avg: ', formatPercent),
         reduce: Table.aggr.avg,
         init: 0
     });
 
     // Sort on the coverage
-    table.sort(['Unit Test Coverage|des']);
+    table.sort(['Current Coverage|des']);
     return '```' + table.toString() + '```';
 }
 
