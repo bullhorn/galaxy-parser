@@ -47,24 +47,20 @@ export default function (current, last, goalSetting) {
     // Coverage
     messages.push({
         color: getColor(current.coverage.lines.percent, last.coverage.lines.percent),
-        fields: [
-            {
-                title: 'Unit Test Coverage',
-                value: getText(current.coverage.lines.percent, last.coverage.lines.percent, true, goalSetting)
-            }
-        ]
+        fields: [{
+            title: 'Unit Test Coverage',
+            value: getText(current.coverage.lines.percent, last.coverage.lines.percent, true, goalSetting)
+        }]
     });
 
     // Linting
     if (last.eslint && current.eslint) {
         messages.push({
             color: getColor(last.eslint.errors + last.eslint.warnings, current.eslint.errors + current.eslint.warnings),
-            fields: [
-                {
-                    title: 'Lint Warnings/Errors',
-                    value: getText(current.eslint.errors + current.eslint.warnings, last.eslint.errors + last.eslint.warnings, false, goalSetting)
-                }
-            ]
+            fields: [{
+                title: 'Lint Warnings/Errors',
+                value: getText(current.eslint.errors + current.eslint.warnings, last.eslint.errors + last.eslint.warnings, false, goalSetting)
+            }]
         });
     }
     return messages;

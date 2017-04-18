@@ -114,7 +114,7 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
         });
 
         // Send Slack Messages
-        if (SLACK_HOOK && SLACK_CHANNEL && deltaCheck(parsed.dashboard, lastRun)) {
+        if (SLACK_HOOK && SLACK_CHANNEL && deltaCheck(parsed.dashboard, lastRun, GALAXY_SETTINGS.threshold)) {
             // Create a slack message based on the results
             var message = {
                 text: `New results for <http://metrics:9002/#/project/${packageJSON.name}|${parsed.dashboard.displayName}>, triggered by *${lastCommit.author_name}*`,

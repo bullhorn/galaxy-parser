@@ -1,6 +1,8 @@
 // Vendor
 import fs from 'fs';
-import { parseString } from 'xml2js';
+import {
+    parseString
+} from 'xml2js';
 
 function getCounter(source, type) {
     return source.counter.filter(counter => {
@@ -20,9 +22,24 @@ let format = (report) => {
                 return cl.$.name === className;
             })[0];
 
-            var functions = getCounter(s, 'METHOD') || { $: { missed: 0, covered: 0 } };
-            var lines = getCounter(s, 'LINE') || { $: { missed: 0, covered: 0 } };
-            var branches = getCounter(s, 'BRANCH') || { $: { missed: 0, covered: 0 } };
+            var functions = getCounter(s, 'METHOD') || {
+                $: {
+                    missed: 0,
+                    covered: 0
+                }
+            };
+            var lines = getCounter(s, 'LINE') || {
+                $: {
+                    missed: 0,
+                    covered: 0
+                }
+            };
+            var branches = getCounter(s, 'BRANCH') || {
+                $: {
+                    missed: 0,
+                    covered: 0
+                }
+            };
 
             return {
                 title: s.$.name,
@@ -58,21 +75,21 @@ let format = (report) => {
                         s.line.filter(l => {
                             return Number(l.$.mb) > 0 || Number(l.$.cb) > 0;
                         })
-                            .map(l => {
-                                var branches = [];
-                                var count = Number(l.$.mb) + Number(l.$.cb);
+                        .map(l => {
+                            var branches = [];
+                            var count = Number(l.$.mb) + Number(l.$.cb);
 
-                                for (var i = 0; i < count; ++i) {
-                                    branches = branches.concat({
-                                        line: Number(l.$.nr),
-                                        block: 0,
-                                        branch: Number(i),
-                                        taken: i < Number(l.$.cb) ? 1 : 0
-                                    });
-                                }
+                            for (var i = 0; i < count; ++i) {
+                                branches = branches.concat({
+                                    line: Number(l.$.nr),
+                                    block: 0,
+                                    branch: Number(i),
+                                    taken: i < Number(l.$.cb) ? 1 : 0
+                                });
+                            }
 
-                                return branches;
-                            })
+                            return branches;
+                        })
                     )
                 }
             };

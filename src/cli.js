@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Vendor
+ // Vendor
 import program from 'commander';
 // APP
 import analyze from './analyze';

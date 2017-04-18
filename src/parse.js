@@ -49,7 +49,10 @@ async function parse(locations) {
         console.log(e);
     }
 
-    return { dashboard, report };
+    return {
+        dashboard,
+        report
+    };
 }
 
 export default parse;
