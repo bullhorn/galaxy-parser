@@ -37,26 +37,25 @@ function getProjectTable(projects) {
     // Setup the table
     projects.forEach(project => {
         table.cell('Project', project.displayName);
-        table.cell('Current Coverage', Number(project.coverage.lines.percent), leftAlignPercent);
-        table.cell('Higest Coverage', Number(project.coverageHighest), leftAlignPercent);
+        table.cell('Lines', Number(project.coverage.lines.found), leftAlign);
+        table.cell('Current (%)', Number(project.coverage.lines.percent), leftAlignPercent);
+        table.cell('Highest (%)', Number(project.coverageHighest), leftAlignPercent);
         table.cell('Delta', project.coverageTrend || '0.00', leftAlignPercent);
-        if (project.eslint) {
-            table.cell('Linting', project.eslint.warnings + project.eslint.errors, leftAlign);
-        } else {
-            table.cell('Linting', '-', leftAlign);
-        }
         table.newRow()
     });
 
+    // Create total for lines
+    table.total('Lines');
+
     // Create the avg for coverage
-    table.total('Current Coverage', {
+    table.total('Current (%)', {
         printer: Table.aggr.printer('Avg: ', formatPercent),
         reduce: Table.aggr.avg,
         init: 0
     });
 
     // Sort on the coverage
-    table.sort(['Current Coverage|des']);
+    table.sort(['Current (%)|des']);
     return '```' + table.toString() + '```';
 }
 
@@ -64,7 +63,7 @@ function getProjectTable(projects) {
  * Get the slack message for the summary
  */
 function getMessage(projects) {
-    var message = '*<http://metrics:9002|Daily Galaxy Report>*\n';
+    var message = '*<http://metrics:9002|Daily Galaxy Report - Bullhorn Code Coverage Metrics>*\n';
     message += getProjectTable(projects);
     message += '\n_Want your project on here? Consult the <https://github.com/jgodi/galaxy-parser/blob/master/README.md|Galaxy Parser> to learn how!_';
     return message;
