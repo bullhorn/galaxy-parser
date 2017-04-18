@@ -37,15 +37,16 @@ function getProjectTable(projects) {
     // Setup the table
     projects.forEach(project => {
         table.cell('Project', project.displayName);
-        table.cell('Lines', Number(project.coverage.lines.found), leftAlign);
+        table.cell('Lines (#)', Number(project.coverage.lines.found), leftAlign);
         table.cell('Current (%)', Number(project.coverage.lines.percent), leftAlignPercent);
         table.cell('Highest (%)', Number(project.coverageHighest), leftAlignPercent);
         table.cell('Delta', project.coverageTrend || '0.00', leftAlignPercent);
+        table.cell('Health', project.coverageHealth, leftAlign);
         table.newRow()
     });
 
     // Create total for lines
-    table.total('Lines');
+    table.total('Lines (#)');
 
     // Create the avg for coverage
     table.total('Current (%)', {
@@ -100,10 +101,13 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
                             if (lastCoverage > newCoverage && highestCoverage > newCoverage) {
                                 let compare = highestCoverage > newCoverage ? highestCoverage : lastCoverage;
                                 projects[key].coverageTrend = '-' + (compare - newCoverage).toFixed(2);
+                                projects[key].coverageHealth = 'poor';
                             } else if (newCoverage > lastCoverage) {
                                 projects[key].coverageTrend = '+' + (newCoverage - lastCoverage).toFixed(2);
+                                projects[key].coverageHealth = 'great';
                             } else {
                                 projects[key].coverageTrend = '0.00';
+                                projects[key].coverageHealth = 'stable';
                             }
                             projects[key].coverageHighest = newCoverage > highestCoverage ? newCoverage : highestCoverage;
                         }
