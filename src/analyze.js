@@ -120,7 +120,7 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
                 text: `New results for <http://metrics:9002/#/project/${packageJSON.name}|${parsed.dashboard.displayName}>, triggered by *${lastCommit.author_name}*`,
                 channel: SLACK_CHANNEL,
                 username: 'Galaxy',
-                attachments: formatSlackMessage(parsed.dashboard, lastRun, GALAXY_SETTINGS.threshold),
+                attachments: formatSlackMessage(parsed.dashboard, lastRun, GALAXY_SETTINGS.goal),
                 icon_url: 'https://67.media.tumblr.com/avatar_975d849db99f_128.png'
             };
             request.post('https://hooks.slack.com/services/' + SLACK_HOOK, {
