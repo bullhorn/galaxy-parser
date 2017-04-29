@@ -47,23 +47,13 @@ function getProjectTable(projects) {
         }
 
         table.cell('Project', project.displayName);
-        table.cell('Lines (#)', project.coverage.testableLines, leftAlign);
+        table.cell('Testable Lines (#)', project.coverage.testableLines, leftAlign);
         table.cell('Current (%)', parseFloat(project.coverage.current).toFixed(project.precision), leftAlignPercent);
         table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
         table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
         table.cell('Health', health, leftAlign);
         table.newRow()
     }
-
-    // Create total for lines
-    table.total('Lines (#)');
-
-    // Create the avg for coverage
-    table.total('Current (%)', {
-        printer: Table.aggr.printer('Avg: ', formatPercent),
-        reduce: Table.aggr.avg,
-        init: 0
-    });
 
     // Sort on the coverage
     table.sort(['Current (%)|des']);
@@ -77,6 +67,7 @@ function getMessage(projects) {
     var message = '*<http://metrics:9002|Daily Galaxy Report - Bullhorn Code Coverage Metrics>*\n';
     message += getProjectTable(projects);
     message += '\n_Want your project on here? Consult the <https://github.com/jgodi/galaxy-parser/blob/master/README.md|Galaxy Parser> to learn how!_';
+    message += '\n_Is your project missing? Contact Joshua Godi for assistance';
     return message;
 }
 
