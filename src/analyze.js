@@ -10,11 +10,11 @@ let packageJSON = require(`${process.cwd()}/package.json`);
 const GALAXY_SETTINGS = packageJSON.galaxy;
 
 /**
- * Gets the last run of the project
+ * Get the project's data
  */
-async function getLastRun(name, FIREBASE_URL) {
+async function getProjectData(name, FIREBASE_URL) {
     return new Promise((resolve, reject) => {
-        request(`https://${FIREBASE_URL}/dashboard/${name}.json`, (err, res, body) => {
+        request(`https://${FIREBASE_URL}/projects/${name}.json`, (err, res, body) => {
             if (err) {
                 reject(err);
                 return;
@@ -42,16 +42,15 @@ async function getLastCommit() {
 /**
  * Checks to make sure the two builds differ enough to send slack messages
  */
-function deltaCheck(current, last, threshold) {
-    if (!last) {
-        console.log('[Galaxy Parser]: No previous results, skipping slack message');
-        return false;
+function deltaCheck(projectData) {
+    // If the coverage is still below the max, show
+    if (projectData.coverage.highest > projectData.coverage.current) {
+        return true;
     }
-    // If there is no threshold, then set to 0 to report all changes!
-    var deltaThreshold = threshold || 0;
-    var diff = Math.abs(current.coverage.lines.percent - last.coverage.lines.percent);
-    console.log(`[Galaxy Parser]: Results differ by ${diff}%${diff >= deltaThreshold ? ', posting slack message' : ', skipping slack message'}`);
-    return diff >= deltaThreshold;
+    var diff = projectData.coverage.current - projectData.coverage.last;
+    if (diff < 0) diff *= -1;
+    console.log(`[Galaxy Parser]: Results differ by ${diff}%${diff >= projectData.threshold ? ', posting slack message' : ', skipping slack message'}`);
+    return diff >= projectData.threshold;
 }
 
 async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
@@ -68,66 +67,91 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
     }
 
     try {
-        // Get the last run
-        let lastRun = await getLastRun(packageJSON.name, FIREBASE_URL);
+        // Get the project data
+        let projectData = await getProjectData(packageJSON.name, FIREBASE_URL);
         // Get the last commit
         let lastCommit = await getLastCommit();
         // Parse the new results
         let parsed = await parse(GALAXY_SETTINGS.locations);
 
-        // Only happens on the first run, so lefts defalt lastRun if null
-        if (!lastRun) {
-            lastRun = {
-                coverage: {
-                    lines: {
-                        percent: 0
-                    }
+        // Default some data if this is the first run
+        if (!projectData) {
+            projectData = {
+                lines: {
+                    current: 0,
+                    history: []
                 },
-                eslint: {
-                    warnings: 0,
-                    errors: 0
+                coverage: {
+                    current: 0,
+                    highest: 0,
+                    history: []
                 }
             };
         }
 
-        // Modify the parsed report
-        // Set the name
-        parsed.dashboard.displayName = GALAXY_SETTINGS.display || packageJSON.name;
-        parsed.report.displayName = GALAXY_SETTINGS.display || packageJSON.name;
-        // Set the last commit
-        parsed.dashboard.commit = lastCommit;
-        parsed.report.commit = lastCommit;
-        // Set the type
-        parsed.dashboard.type = GALAXY_SETTINGS.type;
-        parsed.report.type = GALAXY_SETTINGS.type;
-        // Set the url
-        parsed.dashboard.url = packageJSON.repository.url;
+        // Set the data
+        // Base
+        projectData.key = packageJSON.name;
+        projectData.displayName = GALAXY_SETTINGS.display || packageJSON.name;
+        projectData.url = packageJSON.repository && packageJSON.repository.url ? packageJSON.repository.url.replace('.git', '') : '';
+        projectData.threshold = GALAXY_SETTINGS.threshold || 0;
+        projectData.goal = GALAXY_SETTINGS.goal || 80;
+        projectData.type = GALAXY_SETTINGS.type || 'unknown';
+        projectData.public = GALAXY_SETTINGS.public || false;
+        projectData.precision = GALAXY_SETTINGS.precision || 2;
+        // Timestamp
+        projectData.timestamp = Date.now();
+        // Commit
+        projectData.commit = {
+            hash: lastCommit.hash,
+            date: lastCommit.date,
+            message: lastCommit.message,
+            author: {
+                name: lastCommit.author_name,
+                email: lastCommit.author_email
+            }
+        };
+        // Lines
+        projectData.lines = {
+            current: parsed.sloc.total,
+            last: projectData.lines.current,
+            breakdown: parsed.sloc.byExt,
+            history: projectData.lines.history.concat([
+                [Date.now(), parsed.sloc.total]
+            ])
+        };
+        // Coverage
+        projectData.coverage = {
+            testableLines: parsed.coverage.lines.found,
+            current: parsed.coverage.lines.percent + 5,
+            last: projectData.coverage.current,
+            highest: parsed.coverage.lines.percent > projectData.coverage.highest ? parsed.coverage.lines.percent : projectData.coverage.highest,
+            history: projectData.coverage.history.concat([
+                [Date.now(), parsed.coverage.lines.percent]
+            ])
+        }
 
         // Upload to firebase
-        // Send the dashboard to firebase
-        request.put('https://' + FIREBASE_URL + '/dashboard/' + packageJSON.name + '.json', {
-            json: parsed.dashboard
-        });
-        // Send the report to firebase
-        request.post('https://' + FIREBASE_URL + '/' + packageJSON.name + '.json', {
-            json: parsed.report
+        // Send the project back to firebase
+        request.put('https://' + FIREBASE_URL + '/projects/' + packageJSON.name + '.json', {
+            json: projectData
         });
 
         // Send Slack Messages
-        if (SLACK_HOOK && SLACK_CHANNEL && deltaCheck(parsed.dashboard, lastRun, GALAXY_SETTINGS.threshold)) {
+        if (SLACK_HOOK && SLACK_CHANNEL && deltaCheck(projectData)) {
             // Create a slack message based on the results
             var message = {
-                text: `New results for <http://metrics:9002/#/project/${packageJSON.name}|${parsed.dashboard.displayName}>, triggered by *${lastCommit.author_name}*`,
+                text: `New results for <http://metrics:9002/#/${packageJSON.name}|${projectData.displayName}>, triggered by *${projectData.commit.author.name}*`,
                 channel: SLACK_CHANNEL,
                 username: 'Galaxy',
-                attachments: formatSlackMessage(parsed.dashboard, lastRun, GALAXY_SETTINGS.goal),
+                attachments: formatSlackMessage(projectData),
                 icon_url: 'https://67.media.tumblr.com/avatar_975d849db99f_128.png'
             };
             request.post('https://hooks.slack.com/services/' + SLACK_HOOK, {
                 json: message
             });
         } else {
-            console.log('[Galaxy Parser]: Report does not differentiate enough to send slack messages!');
+            console.log(`[Galaxy Parser]: Report does not differentiate enough (+/- ${projectData.threshold}) to send slack messages!`);
         }
     } catch (e) {
         console.log('[Galaxy Parser]: ERROR', e);

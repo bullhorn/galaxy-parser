@@ -13,9 +13,6 @@ export default function (fileLocation) {
             formatted.byExt[key] = json.byExt[key].summary.total;
         });
 
-        resolve({
-            dashboard: formatted,
-            report: formatted
-        });
+        resolve(formatted);
     });
 };

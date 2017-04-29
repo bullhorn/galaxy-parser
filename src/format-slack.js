@@ -6,33 +6,34 @@ const COLORS = {
 };
 
 // Get the color based on the value
-function getColor(current, last) {
+function getColor(current, last, highest) {
+    if (highest > current) return COLORS.down;
     if (current > last) return COLORS.up;
     if (current < last) return COLORS.down;
     return COLORS.same;
 }
 
 // Get the slack message
-function getText(current, last, coverage, goalSetting) {
-    var goal = goalSetting || 80;
-    var message = current;
-    if (coverage) message += '%';
-
-    var difference = (current - last).toFixed(2);
+function getText(current, last, highest, precision) {
+    var message = parseFloat(current).toFixed(precision);
+    message += '%';
+    var difference = parseFloat((current - last)).toFixed(precision);
     if (difference < 0) difference *= -1;
-
-    if (current !== last) {
+    if (current !== last || highest > current) {
         message += '\t-\t';
-        if (current > last) message += ':arrow_up: ';
-        if (current < last) message += ':arrow_down: ';
-        message += difference;
-        if (coverage) {
+        if (current > last && current > highest) message += ':arrow_up: ';
+        if (current < last || current < highest) message += ':arrow_down: ';
+        if (highest > current) {
+            difference = highest - current;
+            message += parseFloat(difference).toFixed(precision);
+            message += '% still behind the highest coverage ever (' + highest + '%) :warning:';
+        } else {
+            message += parseFloat(difference).toFixed(precision);
             message += '%';
-            if (current < goal) {
-                message += '\t-\t:warning: ';
-                message += (goal - current).toFixed(2);
-                message += '%';
-                message += ' left to goal (' + goal + '%) :warning:'
+            if (current > last) {
+                message += '\t-\t:partyparrot: NEW HIGH SCORE! :aussie_parrot:';
+            } else {
+                message += '\t-\t:crying_cat_face: Oh no.. REVERT! REVERT!';
             }
         }
     }
@@ -41,27 +42,16 @@ function getText(current, last, coverage, goalSetting) {
 }
 
 // Format a slack message
-export default function (current, last, goalSetting) {
+export default function (projectData) {
     var messages = [];
 
     // Coverage
     messages.push({
-        color: getColor(current.coverage.lines.percent, last.coverage.lines.percent),
+        color: getColor(projectData.coverage.current, projectData.coverage.last, projectData.coverage.highest),
         fields: [{
-            title: 'Unit Test Coverage',
-            value: getText(current.coverage.lines.percent, last.coverage.lines.percent, true, goalSetting)
+            title: 'Coverage (%)',
+            value: getText(projectData.coverage.current, projectData.coverage.last, projectData.coverage.highest, projectData.precision)
         }]
     });
-
-    // Linting
-    if (last.eslint && current.eslint) {
-        messages.push({
-            color: getColor(last.eslint.errors + last.eslint.warnings, current.eslint.errors + current.eslint.warnings),
-            fields: [{
-                title: 'Lint Warnings/Errors',
-                value: getText(current.eslint.errors + current.eslint.warnings, last.eslint.errors + last.eslint.warnings, false, goalSetting)
-            }]
-        });
-    }
     return messages;
 };

@@ -2,12 +2,10 @@
 import lcov from './parsers/lcov';
 import jacoco from './parsers/jacoco';
 import jacocoMulti from './parsers/jacoco-multi';
-import eslint from './parsers/eslint';
 import sloc from './parsers/sloc';
 
 async function parse(locations) {
-    let dashboard = {};
-    let report = {};
+    let ret = {};
 
     try {
         await Promise.all(Object.keys(locations).map(async function (location) {
@@ -25,9 +23,6 @@ async function parse(locations) {
                 case 'jacoco-multi':
                     result = await jacocoMulti(locations[location]);
                     break;
-                case 'eslint':
-                    result = await eslint(locations[location]);
-                    break;
                 case 'sloc':
                     result = await sloc(locations[location]);
                     break;
@@ -41,18 +36,14 @@ async function parse(locations) {
             }
 
             if (result) {
-                dashboard[key] = result.dashboard;
-                report[key] = result.report;
+                ret[key] = result;
             }
         }));
     } catch (e) {
         console.log(e);
     }
 
-    return {
-        dashboard,
-        report
-    };
+    return ret;
 }
 
 export default parse;
