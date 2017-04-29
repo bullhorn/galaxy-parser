@@ -112,14 +112,18 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
             }
         };
         // Lines
-        projectData.lines = {
-            current: parsed.sloc.total,
-            last: projectData.lines.current,
-            breakdown: parsed.sloc.byExt,
-            history: projectData.lines.history.concat([
-                [Date.now(), parsed.sloc.total]
-            ])
-        };
+        if (parsed.sloc) {
+            projectData.lines = {
+                current: parsed.sloc.total,
+                last: projectData.lines.current,
+                breakdown: parsed.sloc.byExt,
+                history: projectData.lines.history.concat([
+                    [Date.now(), parsed.sloc.total]
+                ])
+            };
+        } else {
+            delete projectData.lines;
+        }
         // Coverage
         projectData.coverage = {
             testableLines: parsed.coverage.lines.found,
