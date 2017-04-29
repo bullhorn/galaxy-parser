@@ -127,7 +127,7 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
         // Coverage
         projectData.coverage = {
             testableLines: parsed.coverage.lines.found,
-            current: parsed.coverage.lines.percent + 5,
+            current: parsed.coverage.lines.percent,
             last: projectData.coverage.current,
             highest: parsed.coverage.lines.percent > projectData.coverage.highest ? parsed.coverage.lines.percent : projectData.coverage.highest,
             history: projectData.coverage.history.concat([
