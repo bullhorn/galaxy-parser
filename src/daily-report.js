@@ -67,7 +67,7 @@ function getMessage(projects) {
     var message = '*<http://metrics:9002|Daily Galaxy Report - Bullhorn Code Coverage Metrics>*\n';
     message += getProjectTable(projects);
     message += '\n_Want your project on here? Consult the <https://github.com/jgodi/galaxy-parser/blob/master/README.md|Galaxy Parser> to learn how!_';
-    message += '\n_Is your project missing? Contact Joshua Godi for assistance';
+    message += '\n_Is your project missing? Contact Joshua Godi for assistance_';
     return message;
 }
 
