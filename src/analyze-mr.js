@@ -29,12 +29,14 @@ async function getProjectData(name, FIREBASE_URL) {
 /**
  * Gets the git diff for the branch
  */
-async function getGitDiff(base, current) {
+async function getGitDiff(base, current, api) {
+    let b = api === 'gitlab' ? `remotes/origin/${base}` : 'HEAD';
+    let c = api === 'gitlab' ? `remotes/origin/${current}` : base;
     return new Promise((resolve, reject) => {
-        simpleGit().diffSummary([base, current], (err, data) => {
+        console.error('[Galaxy Parser]: comparing branches', b, c);
+        simpleGit().diffSummary([b, c], (err, data) => {
             if (err) {
-                reject(err);
-                return;
+                throw err;
             }
             resolve(data ? data : {});
         });
@@ -82,7 +84,7 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
         // Parse the new results
         let currentRun = await parse(GALAXY_SETTINGS.locations);
         // Get the git diff for this branch
-        let gitDiff = await getGitDiff(GALAXY_SETTINGS.defaultBranch, BRANCH);
+        let gitDiff = await getGitDiff(GALAXY_SETTINGS.defaultBranch, BRANCH, GALAXY_SETTINGS.api);
 
         // Get a list of files that changes
         let changedFiles = [];
@@ -125,6 +127,8 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
                 });
             }
         });
+
+        console.log('[Galaxy Parser]: Compare Data %j', overallCompare);
 
         if (GALAXY_SETTINGS.api === 'github') {
             updatePR(overallCompare, BRANCH, GALAXY_SETTINGS.owner, GALAXY_SETTINGS.repo, API_KEY);

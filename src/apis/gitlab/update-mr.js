@@ -21,12 +21,14 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey) {
     }));
 
     if (mr) {
+        console.error('[Galaxy Parser]: creating comment on MR');
         client.mergeRequests.createNote({
             id: gitlabProjectId,
             merge_request_id: mr.id,
             body: generateMarkdownMessage(data)
         });
         let newLabel = '';
+        // TODO - also check for new files with less then 80%
         if (data.coverage.indexOf('-') !== -1) {
             newLabel = 'Failed: Code Coverage';
         } else {

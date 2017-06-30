@@ -20,6 +20,7 @@ async function updatePR(data, branch, owner, repo, apikey) {
     });
     if (prs.data.length > 0) {
         let number = prs.data[0].number;
+        console.error('[Galaxy Parser]: creating comment on PR');
         github.issues.createComment({
             owner: owner,
             repo: repo,
