@@ -5,7 +5,8 @@ import jacocoMulti from './parsers/jacoco-multi';
 import sloc from './parsers/sloc';
 
 async function parse(locations) {
-    let ret = {};
+    let totals = {};
+    let files = {};
 
     try {
         await Promise.all(Object.keys(locations).map(async function (location) {
@@ -36,14 +37,18 @@ async function parse(locations) {
             }
 
             if (result) {
-                ret[key] = result;
+                totals[key] = result.totals;
+                files[key] = result.files;
             }
         }));
     } catch (e) {
         console.log(e);
     }
 
-    return ret;
+    return {
+        totals,
+        files
+    };
 }
 
 export default parse;

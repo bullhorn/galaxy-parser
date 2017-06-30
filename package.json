@@ -1,6 +1,6 @@
 {
   "name": "galaxy-parser",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Analyzes your code metric reports and will parse the results into Galaxy",
   "preferGlobal": true,
   "scripts": {
@@ -40,7 +40,9 @@
     "babel-preset-stage-0": "^6.5.0",
     "commander": "^2.9.0",
     "easy-table": "^1.0.0",
+    "github": "^9.2.0",
     "lcov-parse": "0.0.10",
+    "node-gitlab": "^1.6.0",
     "request": "^2.74.0",
     "simple-git": "^1.48.0",
     "sloc": "^0.1.10",

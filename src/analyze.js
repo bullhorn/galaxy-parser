@@ -112,13 +112,13 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
             }
         };
         // Lines
-        if (parsed.sloc) {
+        if (parsed.totals.sloc) {
             projectData.lines = {
-                current: parsed.sloc.total,
+                current: parsed.totals.sloc.total,
                 last: projectData.lines.current,
-                breakdown: parsed.sloc.byExt,
+                breakdown: parsed.totals.sloc.byExt,
                 history: projectData.lines.history.concat([
-                    [Date.now(), parsed.sloc.total]
+                    [Date.now(), parsed.totals.sloc.total]
                 ])
             };
         } else {
@@ -126,19 +126,24 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
         }
         // Coverage
         projectData.coverage = {
-            testableLines: parsed.coverage.lines.found,
-            current: parsed.coverage.lines.percent,
+            testableLines: parsed.totals.coverage.lines.found,
+            current: parsed.totals.coverage.lines.percent,
             last: projectData.coverage.current,
-            highest: parsed.coverage.lines.percent > projectData.coverage.highest ? parsed.coverage.lines.percent : projectData.coverage.highest,
+            highest: parsed.totals.coverage.lines.percent > projectData.coverage.highest ? parsed.totals.coverage.lines.percent : projectData.coverage.highest,
             history: projectData.coverage.history.concat([
-                [Date.now(), parsed.coverage.lines.percent]
+                [Date.now(), parsed.totals.coverage.lines.percent]
             ])
         }
-
+        // Files
+        projectData.files = parsed.files.coverage;
         // Upload to firebase
         // Send the project back to firebase
         request.put('https://' + FIREBASE_URL + '/projects/' + packageJSON.name + '.json', {
             json: projectData
+        }, (error, response, body) => {
+            if (error || body.error) {
+                console.error('[Galaxy Parser]: HTTP ERROR', error || body.error);
+            }
         });
 
         // Send Slack Messages
