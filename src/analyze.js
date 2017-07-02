@@ -72,7 +72,7 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
         // Get the last commit
         let lastCommit = await getLastCommit();
         // Parse the new results
-        let parsed = await parse(GALAXY_SETTINGS.locations);
+        let parsed = await parse(GALAXY_SETTINGS.locations, false);
 
         // Default some data if this is the first run
         if (!projectData) {

@@ -45,13 +45,25 @@ async function getGitDiff(base, current, api) {
 
 function getDiffLabel(current, last) {
     if (last === 0) {
-        return `+${current}%`;
+        return {
+            label: `+${current}%`,
+            pass: current >= 80
+        };
     } else if (last > current) {
-        return `-${Number(last - current).toFixed(2)}%`;
+        return {
+            label: `-${Number(last - current).toFixed(GALAXY_SETTINGS.precision || 2)}%`,
+            pass: false
+        };
     } else if (current > last) {
-        return `+${Number(current - last).toFixed(2)}%`;
+        return {
+            label: `+${Number(current - last).toFixed(GALAXY_SETTINGS.precision || 2)}%`,
+            pass: true
+        };
     } else {
-        return 'No Change';
+        return {
+            label: 'No Change',
+            pass: true
+        };
     }
 }
 
@@ -82,14 +94,16 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
         // Get the data from the last run
         let lastRun = await getProjectData(packageJSON.name, FIREBASE_URL);
         // Parse the new results
-        let currentRun = await parse(GALAXY_SETTINGS.locations);
+        let currentRun = await parse(GALAXY_SETTINGS.locations, true);
         // Get the git diff for this branch
         let gitDiff = await getGitDiff(GALAXY_SETTINGS.defaultBranch, BRANCH, GALAXY_SETTINGS.api);
 
         // Get a list of files that changes
         let changedFiles = [];
+        let fullPathChangedFiles = [];
         if (gitDiff.files) {
             changedFiles = gitDiff.files.map(diff => path.basename(diff.file));
+            fullPathChangedFiles = gitDiff.files.map(diff => diff.file);
         }
 
         let overallCompare = {
@@ -133,7 +147,18 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
         if (GALAXY_SETTINGS.api === 'github') {
             updatePR(overallCompare, BRANCH, GALAXY_SETTINGS.owner, GALAXY_SETTINGS.repo, API_KEY);
         } else if (GALAXY_SETTINGS.api === 'gitlab') {
-            updateMR(overallCompare, BRANCH, GALAXY_SETTINGS.gitlabApiUrl, GALAXY_SETTINGS.gitlabProjectId, API_KEY);
+            let automationSuitesToRun = [];
+            if (GALAXY_SETTINGS.automationSuites && GALAXY_SETTINGS.automationSuites.length !== 0) {
+                let changedFilesString = fullPathChangedFiles.join(',');
+                console.log('CHECKING SUITES', changedFilesString);
+                GALAXY_SETTINGS.automationSuites.forEach(suite => {
+                    if (changedFilesString.includes(suite.test)) {
+                        automationSuitesToRun.push(suite);
+                    }
+                });
+                console.log('RUN SUITES', automationSuitesToRun);
+            }
+            updateMR(overallCompare, BRANCH, GALAXY_SETTINGS.gitlabApiUrl, GALAXY_SETTINGS.gitlabProjectId, API_KEY, automationSuitesToRun);
         } else {
             console.log('[Galaxy Parser]: Invalid API -- cannot update MR/PR', GALAXY_SETTINGS.api);
         }

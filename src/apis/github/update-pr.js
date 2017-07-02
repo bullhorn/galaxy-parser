@@ -25,7 +25,7 @@ async function updatePR(data, branch, owner, repo, apikey) {
             owner: owner,
             repo: repo,
             number: number,
-            body: generateMarkdownMessage(data)
+            body: generateMarkdownMessage(data, false, null)
         });
     } else {
         console.error('[Galaxy Parser]: Unable to find PR for', branch);
