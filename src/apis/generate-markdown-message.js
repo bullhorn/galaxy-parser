@@ -1,5 +1,5 @@
 function addEmoji(label, pass) {
-    return `${pass ? ':white_check_mark:' : 'bangbang'} ${label}`;
+    return `${pass ? ':white_check_mark:' : ':bangbang:'} ${label}`;
 }
 
 function generateMarkdownMessage(data, insertMarker, other) {

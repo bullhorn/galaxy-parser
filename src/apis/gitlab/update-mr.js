@@ -53,12 +53,19 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, automationSu
         } else {
             newLabel = 'Pass: Code Coverage';
         }
-        client.mergeRequests.update({
-            id: gitlabProjectId,
-            merge_request_id: mr.id,
-            description: generateDescription(mr.description, data, automationSuitesToRun),
-            labels: mr.labels ? mr.labels.join(',') + `,${newLabel}` : newLabel
-        });
+        if (mr.labels.indexOf('Failed: Code Coverage')) {
+            mr.labels.splice(mr.labels.indexOf('Failed: Code Coverage'), 1);
+        }
+        if (mr.labels.indexOf('Pass: Code Coverage')) {
+            mr.labels.splice(mr.labels.indexOf('Pass: Code Coverage'), 1);
+        }
+        if (mr.labels.includes('Failed: Code Coverage'))
+            client.mergeRequests.update({
+                id: gitlabProjectId,
+                merge_request_id: mr.id,
+                description: generateDescription(mr.description, data, automationSuitesToRun),
+                labels: mr.labels ? mr.labels.join(',') + `,${newLabel}` : newLabel
+            });
     } else {
         console.error('[Galaxy Parser]: Unable to find MR for', branch);
     }

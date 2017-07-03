@@ -137,7 +137,10 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
                 let current = currentRunData[file] ? Number(currentRunData[file].lines) : 0;
                 overallCompare.files.push({
                     name: file,
-                    diff: getDiffLabel(current, last)
+                    diff: currentRunData[file] ? getDiffLabel(current, last) : {
+                        label: 'Deleted',
+                        pass: true
+                    }
                 });
             }
         });
@@ -150,13 +153,11 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
             let automationSuitesToRun = [];
             if (GALAXY_SETTINGS.automationSuites && GALAXY_SETTINGS.automationSuites.length !== 0) {
                 let changedFilesString = fullPathChangedFiles.join(',');
-                console.log('CHECKING SUITES', changedFilesString);
                 GALAXY_SETTINGS.automationSuites.forEach(suite => {
                     if (changedFilesString.includes(suite.test)) {
                         automationSuitesToRun.push(suite);
                     }
                 });
-                console.log('RUN SUITES', automationSuitesToRun);
             }
             updateMR(overallCompare, BRANCH, GALAXY_SETTINGS.gitlabApiUrl, GALAXY_SETTINGS.gitlabProjectId, API_KEY, automationSuitesToRun);
         } else {
