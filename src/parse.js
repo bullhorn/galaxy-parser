@@ -7,6 +7,7 @@ import sloc from './parsers/sloc';
 async function parse(locations, ignoreLoc) {
     let totals = {};
     let files = {};
+    let byModule = {};
 
     try {
         await Promise.all(Object.keys(locations).map(async function (location) {
@@ -43,6 +44,7 @@ async function parse(locations, ignoreLoc) {
             if (result) {
                 totals[key] = result.totals;
                 files[key] = result.files;
+                byModule[key] = result.byModule;
             }
         }));
     } catch (e) {
@@ -51,7 +53,8 @@ async function parse(locations, ignoreLoc) {
 
     return {
         totals,
-        files
+        files,
+        byModule
     };
 }
 

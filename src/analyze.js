@@ -85,7 +85,8 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
                     current: 0,
                     highest: 0,
                     history: []
-                }
+                },
+                byModule: {}
             };
         }
 
@@ -134,10 +135,17 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
                 [Date.now(), parsed.totals.coverage.lines.percent]
             ])
         }
+        // By Module
+        if (parsed.byModule) {
+            projectData.byModule = parsed.byModule;
+        } else {
+            delete projectData.byModule;
+        }
         // Files
         projectData.files = parsed.files.coverage;
         // Upload to firebase
         // Send the project back to firebase
+        console.log('[Galaxy Parser] - Pushing %j', projectData);
         request.put('https://' + FIREBASE_URL + '/projects/' + packageJSON.name + '.json', {
             json: projectData
         }, (error, response, body) => {

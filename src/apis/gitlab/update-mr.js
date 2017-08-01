@@ -45,9 +45,9 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, automationSu
     }));
 
     if (mr) {
-        console.error('[Galaxy Parser]: creating comment on MR');
         let newLabel = '';
         let failingFiles = data.files.filter(file => !file.diff.pass);
+        let description = generateDescription(mr.description, data, automationSuitesToRun);
         if (!data.coverage.pass || failingFiles.length !== 0) {
             newLabel = 'Failed: Code Coverage';
         } else {
@@ -59,13 +59,16 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, automationSu
         if (mr.labels.indexOf('Pass: Code Coverage')) {
             mr.labels.splice(mr.labels.indexOf('Pass: Code Coverage'), 1);
         }
-        if (mr.labels.includes('Failed: Code Coverage'))
-            client.mergeRequests.update({
-                id: gitlabProjectId,
-                merge_request_id: mr.id,
-                description: generateDescription(mr.description, data, automationSuitesToRun),
-                labels: mr.labels ? mr.labels.join(',') + `,${newLabel}` : newLabel
-            });
+        client.mergeRequests.update({
+            id: gitlabProjectId,
+            merge_request_id: mr.id,
+            description: description,
+            labels: mr.labels ? mr.labels.join(',') + `,${newLabel}` : newLabel
+        }).then((response) => {
+            console.log('[Galaxy Parser]: Update MR Success!', response);
+        }).catch((err) => {
+            throw err;
+        });
     } else {
         console.error('[Galaxy Parser]: Unable to find MR for', branch);
     }
