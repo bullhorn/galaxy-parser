@@ -34,10 +34,14 @@ async function getGitDiff(base, current, api) {
     let c = api === 'gitlab' ? `remotes/origin/${current}` : base;
     return new Promise((resolve, reject) => {
         console.error('[Galaxy Parser]: comparing branches', b, c);
+        simpleGit().getRemotes(true, (err, data) => {
+            console.log('REMOTE', data);
+        });
         simpleGit().diffSummary([b, c], (err, data) => {
             if (err) {
                 throw err;
             }
+            console.log('DIFF', data);
             resolve(data ? data : {});
         });
     });
