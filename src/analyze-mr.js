@@ -101,9 +101,11 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
         // Get a list of files that changes
         let changedFiles = [];
         let fullPathChangedFiles = [];
+        let hasI18nFile = false;
         if (gitDiff.files) {
             changedFiles = gitDiff.files.map(diff => path.basename(diff.file));
             fullPathChangedFiles = gitDiff.files.map(diff => diff.file);
+            hasI18nFile = gitDiff.files.filter(diff => diff.file.indexOf('i18n') !== -1).length !== 0;
         }
 
         let overallCompare = {
@@ -145,21 +147,10 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
             }
         });
 
-        console.log('[Galaxy Parser]: Compare Data %j', overallCompare);
-
         if (GALAXY_SETTINGS.api === 'github') {
             updatePR(overallCompare, BRANCH, GALAXY_SETTINGS.owner, GALAXY_SETTINGS.repo, API_KEY);
         } else if (GALAXY_SETTINGS.api === 'gitlab') {
-            let automationSuitesToRun = [];
-            if (GALAXY_SETTINGS.automationSuites && GALAXY_SETTINGS.automationSuites.length !== 0) {
-                let changedFilesString = fullPathChangedFiles.join(',');
-                GALAXY_SETTINGS.automationSuites.forEach(suite => {
-                    if (changedFilesString.includes(suite.test)) {
-                        automationSuitesToRun.push(suite);
-                    }
-                });
-            }
-            updateMR(overallCompare, BRANCH, GALAXY_SETTINGS.gitlabApiUrl, GALAXY_SETTINGS.gitlabProjectId, API_KEY, automationSuitesToRun);
+            updateMR(overallCompare, BRANCH, GALAXY_SETTINGS.gitlabApiUrl, GALAXY_SETTINGS.gitlabProjectId, API_KEY, hasI18nFile);
         } else {
             console.log('[Galaxy Parser]: Invalid API -- cannot update MR/PR', GALAXY_SETTINGS.api);
         }
