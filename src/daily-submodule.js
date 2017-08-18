@@ -34,7 +34,7 @@ function getProjectTable(projects) {
 	for (var projectKey in projects) {
 		var project = projects[projectKey];
 
-		console.log('totals', project.coverage.totals);
+		console.log('totals', project.totals);
 
 		if (project.coverage.current) {
 			var delta = project.coverage.current - project.coverage.last;
