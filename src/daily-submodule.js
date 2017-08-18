@@ -36,7 +36,7 @@ function getProjectTable(projects) {
 
 		console.log('totals', project.totals);
 
-		if (project.coverage.current) {
+		if (project.coverage && project.coverage.current) {
 			var delta = project.coverage.current - project.coverage.last;
 			var higher = delta > 0;
 			var symbol = '';
