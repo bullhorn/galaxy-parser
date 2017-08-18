@@ -33,8 +33,8 @@ function getProjectTable(projects) {
 	// Setup the table
 	for (var projectKey in projects) {
 		var project = projects[projectKey];
-		console.log(project);
-		console.log(project.coverage);
+		console.log(JSON.stringify(project));
+		console.log(JSON.stringify(project.coverage));
 		var delta = project.coverage.current - project.coverage.last;
 		var higher = delta > 0;
 		var symbol = '';
