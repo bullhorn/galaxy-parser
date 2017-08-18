@@ -34,9 +34,8 @@ function getProjectTable(projects) {
 	for (var projectKey in projects) {
 		var project = projects[projectKey];
 
-		console.log(JSON.stringify(project.coverage));
+		console.log(JSON.stringify(project.coverage.lines));
 
-		if(project.coverage && project.coverage.current && project.coverage.last) {
 			var delta = project.coverage.current - project.coverage.last;
 			var higher = delta > 0;
 			var symbol = '';
@@ -61,7 +60,7 @@ function getProjectTable(projects) {
 			table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
 			table.cell('Health', health, leftAlign);
 			table.newRow()
-		}
+
 	}
 
 	// Sort on the coverage
