@@ -34,7 +34,10 @@ function getProjectTable(projects) {
 	for (var projectKey in projects) {
 		var project = projects[projectKey];
 
-		console.log(JSON.stringify(project.coverage.lines));
+		console.log('TEstable Lines', JSON.stringify(project.coverage.testableLines));
+
+
+		console.log('current', JSON.stringify(project.coverage.current));
 
 			var delta = project.coverage.current - project.coverage.last;
 			var higher = delta > 0;
