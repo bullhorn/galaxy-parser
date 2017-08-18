@@ -33,7 +33,7 @@ function getProjectTable(projects) {
 	// Setup the table
 	for (var projectKey in projects) {
 		var project = projects[projectKey];
-		console.log(JSON.stringify(project));
+
 		console.log(JSON.stringify(project.coverage));
 
 		if(project.coverage && project.coverage.current && project.coverage.last) {
@@ -62,6 +62,7 @@ function getProjectTable(projects) {
 	}
 
 	// Sort on the coverage
+	console.log(JSON.stringify(table));
 	table.sort(['Current (%)|des']);
 	return '```' + table.toString() + '```';
 }
