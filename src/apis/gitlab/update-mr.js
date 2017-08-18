@@ -3,19 +3,19 @@ import gitlab from 'node-gitlab';
 // APP
 import generateMarkdownMessage from '../generate-markdown-message';
 
-function replaceComment(description, data, suitesToRun) {
+function replaceComment(description, data) {
     let start = description.indexOf('<!-- Galaxy MR Analyzer: START -->');
     let end = description.indexOf('<!-- Galaxy MR Analyzer: END -->') - 1;
     let endLength = '<!-- Galaxy MR Analyzer: END -->'.length;
     let newDescription = description.substring(0, start, end + endLength);
-    return newDescription + '\n' + generateMarkdownMessage(data, true, suitesToRun);
+    return newDescription + '\n' + generateMarkdownMessage(data, true);
 }
 
 function generateDescription(description, data) {
     if (description.includes('<!-- Galaxy MR Analyzer: START -->')) {
-        return replaceComment(description, data, suitesToRun);
+        return replaceComment(description, data);
     } else {
-        return description + '\n\n' + generateMarkdownMessage(data, true, suitesToRun);
+        return description + '\n\n' + generateMarkdownMessage(data, true);
     }
 }
 
