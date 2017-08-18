@@ -47,10 +47,13 @@ function getProjectTable(projects) {
 				health = 'poor';
 				symbol = '-';
 			} else if (delta > 0) {
-				health = 'great!'
+				health = 'great!';
 				symbol = '+';
 			}
 
+			console.log('TestAble LInes', project.coverage.testableLines);
+
+			console.log('Current', project.coverage.current);
 			table.cell('Project', project.displayName);
 			table.cell('Testable Lines (#)', project.coverage.testableLines, leftAlign);
 			table.cell('Current (%)', parseFloat(project.coverage.current).toFixed(project.precision), leftAlignPercent);
