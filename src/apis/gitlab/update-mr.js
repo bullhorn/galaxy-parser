@@ -12,11 +12,14 @@ function replaceComment(description, data) {
 }
 
 function generateDescription(description, data) {
-    if (description.includes('<!-- Galaxy MR Analyzer: START -->')) {
-        return replaceComment(description, data);
-    } else {
-        return description + '\n\n' + generateMarkdownMessage(data, true);
+    if (data.files.length > 0) {
+        if (description.includes('<!-- Galaxy MR Analyzer: START -->')) {
+            return replaceComment(description, data);
+        } else {
+            return description + '\n\n' + generateMarkdownMessage(data, true);
+        }
     }
+    return description;
 }
 
 async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile) {
