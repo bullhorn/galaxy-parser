@@ -34,7 +34,6 @@ function getProjectTable(projects) {
 	for (var projectKey in projects) {
 		var project = projects[projectKey];
 
-		if (project.coverage && project.coverage.current) {
 			var delta = project.coverage.current - project.coverage.last;
 			var higher = delta > 0;
 			var symbol = '';
@@ -56,8 +55,6 @@ function getProjectTable(projects) {
 			table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
 			table.cell('Health', health, leftAlign);
 			table.newRow()
-		}
-
 	}
 
 	// Sort on the coverage
@@ -85,7 +82,7 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
 	}
 
 	// Get core-services dashboard and make a status report to slack
-	request('https://' + FIREBASE_URL + '/projects/core-services-coverage-reporter.json', function (error, response, body) {
+	request('https://' + FIREBASE_URL + '/project/core-services-coverage-reporter.json', function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			var projects = JSON.parse(body);
 
