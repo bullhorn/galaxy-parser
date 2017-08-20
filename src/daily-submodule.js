@@ -96,12 +96,10 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
 			if (SLACK_HOOK && SLACK_CHANNEL) {
 				// Create a slack message based on the results
 				var message = {
-					attachments: [{
 						text: getMessage(projects),
 						channel: SLACK_CHANNEL,
 						username: 'Galaxy',
 						icon_url: 'https://67.media.tumblr.com/avatar_975d849db99f_128.png'
-					}]
 				};
 				request.post('https://hooks.slack.com/services/' + SLACK_HOOK, {
 					json: message
