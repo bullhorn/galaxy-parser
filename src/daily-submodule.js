@@ -31,12 +31,12 @@ function getProjectTable(projects) {
 	var table = new Table();
 
 	// Setup the table
-	for (var projectKey in projects) {
-		if(JSON.stringify(projectKey).includes("byModule")) {
+	//for (var projectKey in projects) {
+	//	if(JSON.stringify(projectKey).includes("byModule")) {
 
 			var project = projects[projectKey];
 
-			if(project.coverage) {
+		//	if(project.coverage) {
 				for (var submodule in project.coverage) {
 					table.cell('Project', submodule.replace(/-/g, ' ').toLowerCase().split(' ').map(function(word) {
 						return word.replace(word[0], word[0].toUpperCase());
@@ -45,9 +45,9 @@ function getProjectTable(projects) {
 					table.cell('Current (%)', parseFloat(project.coverage[submodule].totals.lines.percent), leftAlignPercent);
 					table.newRow()
 				}
-			}
-		}
-	}
+		//	}
+		//}
+	//}
 
 	// Sort on the coverage
 	table.sort(['Testable Lines (#)|des']);
