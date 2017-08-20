@@ -58,8 +58,8 @@ function getProjectTable(projects) {
 
 			if(project.coverage) {
 				table.cell('Project', JSON.stringify(projectKey));
-				table.cell('Testable Lines (#)', project.totals.lines.found, leftAlign);
-				table.cell('Current (%)', parseFloat(project.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
+				table.cell('Testable Lines (#)', project.coverage.totals.lines.found, leftAlign);
+				table.cell('Current (%)', parseFloat(project.cdoverage.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
 				//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
 				//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
 				table.cell('Health', health, leftAlign);
