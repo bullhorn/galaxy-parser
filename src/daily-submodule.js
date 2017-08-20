@@ -50,12 +50,9 @@ function getProjectTable(projects) {
 			 symbol = '+';
 			 }*/
 
-			console.log('First module', project.coverage[1]);
 			if(project.coverage) {
 				for (var submodule in project.coverage) {
-					console.log('SubModule ', submodule);
-
-					console.log('Files', JSON.stringify(submodule.files));
+					console.log('SubModule ', JSON.stringify(project.coverage[submodule]));
 
 					table.cell('Project', JSON.stringify(submodule));
 					//table.cell('Testable Lines (#)', submodule.totals.lines.found, leftAlign);
