@@ -32,7 +32,7 @@ function getProjectTable(projects) {
 
 	// Setup the table
 	for (var projectKey in projects) {
-		if(projectKey !== 'byModule' || projectKey !== 'coverage') {
+		if(projectKey != 'byModule' || projectKey != 'coverage') {
 
 			var project = projects[projectKey];
 
