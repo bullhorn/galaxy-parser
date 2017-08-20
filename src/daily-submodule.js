@@ -52,7 +52,7 @@ function getProjectTable(projects) {
 
 			if(project.coverage) {
 				for (var submodule in project.coverage) {
-					table.cell('Project', submodule.toUpperCase().replace('-', ' '));
+					table.cell('Project', submodule.toUpperCase().replace(/-/g, ' '));
 					table.cell('Testable Lines (#)', project.coverage[submodule].totals.lines.found, leftAlign);
 					table.cell('Current (%)', parseFloat(project.coverage[submodule].totals.lines.percent), leftAlignPercent);
 					//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
