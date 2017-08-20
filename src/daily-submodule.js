@@ -52,14 +52,12 @@ function getProjectTable(projects) {
 
 			if(project.coverage) {
 				for (var submodule in project.coverage) {
-					console.log('Totals ', JSON.stringify(project.coverage[submodule].totals));
-
 					table.cell('Project', JSON.stringify(submodule));
 					table.cell('Testable Lines (#)', project.coverage[submodule].totals.lines.found, leftAlign);
 					table.cell('Current (%)', parseFloat(project.coverage[submodule].totals.lines.percent), leftAlignPercent);
 					//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
 					//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
-					table.cell('Health', health, leftAlign);
+					//table.cell('Health', health, leftAlign);
 					table.newRow()
 				}
 			}
@@ -67,7 +65,7 @@ function getProjectTable(projects) {
 	}
 
 	// Sort on the coverage
-	table.sort(['Current (%)|des']);
+	table.sort(['Testable Lines (#)|des']);
 	return '```' + table.toString() + '```';
 }
 
