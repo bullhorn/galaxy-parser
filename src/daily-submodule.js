@@ -32,7 +32,7 @@ function getProjectTable(projects) {
 
 	// Setup the table
 	for (var projectKey in projects) {
-		if(JSON.stringify(projectKey) != "byModule" || JSON.stringify(projectKey) != "coverage") {
+		if(!JSON.stringify(projectKey).includes("byModule") || !JSON.stringify(projectKey).includes("coverage")) {
 
 			var project = projects[projectKey];
 
