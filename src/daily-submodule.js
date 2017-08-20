@@ -35,12 +35,6 @@ function getProjectTable(projects) {
 		if(JSON.stringify(projectKey).includes("byModule")) {
 
 			var project = projects[projectKey];
-
-			console.log('Project Key ', JSON.stringify(projectKey));
-
-			//console.log('Object ', JSON.stringify(project));
-
-			//console.log('Totals ', JSON.stringify(project.coverage.totals));
 			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
 			//var higher = delta > 0;
 			var symbol = '';
@@ -60,7 +54,7 @@ function getProjectTable(projects) {
 				for (var submodule in project.coverage) {
 					console.log('SubModule ', submodule);
 
-					//console.log('Totals', JSON.stringify(submodule.totals));
+					console.log('Files', JSON.stringify(submodule.files));
 
 					table.cell('Project', JSON.stringify(submodule));
 					//table.cell('Testable Lines (#)', submodule.totals.lines.found, leftAlign);
