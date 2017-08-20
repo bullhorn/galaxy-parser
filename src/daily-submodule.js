@@ -58,7 +58,7 @@ function getProjectTable(projects) {
 
 			if(project.coverage) {
 				for (var submodule in project.coverage) {
-					console.log('SubModule ', JSON.stringify(submodule));
+					console.log('SubModule ', submodule);
 
 					//console.log('Totals', JSON.stringify(submodule.totals));
 
