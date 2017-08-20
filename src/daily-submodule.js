@@ -38,7 +38,7 @@ function getProjectTable(projects) {
 
 			console.log('Project Key', JSON.stringify(projectKey));
 
-			console.log('Totals', JSON.stringify(project.coverage.testableLines));
+			console.log('Coverage', JSON.stringify(project));
 			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
 			//var higher = delta > 0;
 			var symbol = '';
