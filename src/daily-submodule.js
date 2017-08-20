@@ -34,11 +34,15 @@ function getProjectTable(projects) {
 	for (var projectKey in projects) {
 		var project = projects[projectKey];
 
-			var delta = project.coverage.current - project.coverage.last;
-			var higher = delta > 0;
+		console.log('Project Key', JSON.stringify(projectKey));
+
+		console.log('Totals', JSON.stringify(project.coverage.totals));
+			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
+			//var higher = delta > 0;
 			var symbol = '';
 			var health = 'stable';
 
+			/*
 			if (delta < 0) {
 				delta *= -1;
 				health = 'poor';
@@ -46,13 +50,13 @@ function getProjectTable(projects) {
 			} else if (delta > 0) {
 				health = 'great!';
 				symbol = '+';
-			}
+			}*/
 
 			table.cell('Project', project.displayName);
-			table.cell('Testable Lines (#)', project.coverage.testableLines, leftAlign);
-			table.cell('Current (%)', parseFloat(project.coverage.current).toFixed(project.precision), leftAlignPercent);
-			table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
-			table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
+			table.cell('Testable Lines (#)', project.coverage.totals.lines.found, leftAlign);
+			table.cell('Current (%)', parseFloat(project.coverage.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
+			//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
+			//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
 			table.cell('Health', health, leftAlign);
 			table.newRow()
 	}
@@ -82,7 +86,7 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
 	}
 
 	// Get core-services dashboard and make a status report to slack
-	request('https://' + FIREBASE_URL + '/project/core-services-coverage-reporter.json', function (error, response, body) {
+	request('https://' + FIREBASE_URL + '/projects/core-services-coverage-reporter.json', function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			var projects = JSON.parse(body);
 
