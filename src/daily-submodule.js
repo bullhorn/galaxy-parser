@@ -35,31 +35,14 @@ function getProjectTable(projects) {
 		if(JSON.stringify(projectKey).includes("byModule")) {
 
 			var project = projects[projectKey];
-			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
-			//var higher = delta > 0;
-			var symbol = '';
-			var health = 'stable';
-
-			/*
-			 if (delta < 0) {
-			 delta *= -1;
-			 health = 'poor';
-			 symbol = '-';
-			 } else if (delta > 0) {
-			 health = 'great!';
-			 symbol = '+';
-			 }*/
 
 			if(project.coverage) {
 				for (var submodule in project.coverage) {
 					table.cell('Project', submodule.replace(/-/g, ' ').toLowerCase().split(' ').map(function(word) {
 						return word.replace(word[0], word[0].toUpperCase());
 					}).join(' '));
-					table.cell('Testable Lines (#)', project.coverage[submodule].totals.lines.found);
-					table.cell('Current (%)', parseFloat(project.coverage[submodule].totals.lines.percent) + '%');
-					//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
-					//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
-					//table.cell('Health', health, leftAlign);
+					table.cell('Testable Lines (#)', project.coverage[submodule].totals.lines.found, leftAlign);
+					table.cell('Current (%)', parseFloat(project.coverage[submodule].totals.lines.percent), leftAlignPercent);
 					table.newRow()
 				}
 			}
