@@ -90,7 +90,6 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
 		if (!error && response.statusCode == 200) {
 			var projects = JSON.parse(body);
 
-			console.log('Projects', JSON.stringify(projects));
 			// If a slack hook/channel was supplied, send a message based on trend/stats only if we have a last run
 			if (SLACK_HOOK && SLACK_CHANNEL) {
 				// Create a slack message based on the results
