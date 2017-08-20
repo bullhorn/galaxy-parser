@@ -38,9 +38,9 @@ function getProjectTable(projects) {
 
 			console.log('Project Key ', JSON.stringify(projectKey));
 
-			console.log('Object ', JSON.stringify(project));
+			//console.log('Object ', JSON.stringify(project));
 
-			console.log('Totals ', JSON.stringify(project.coverage.totals));
+			//console.log('Totals ', JSON.stringify(project.coverage.totals));
 			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
 			//var higher = delta > 0;
 			var symbol = '';
@@ -57,13 +57,17 @@ function getProjectTable(projects) {
 			 }*/
 
 			if(project.coverage) {
-				table.cell('Project', JSON.stringify(projectKey));
-				table.cell('Testable Lines (#)', project.coverage.totals.lines.found, leftAlign);
-				table.cell('Current (%)', parseFloat(project.cdoverage.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
-				//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
-				//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
-				table.cell('Health', health, leftAlign);
-				table.newRow()
+				for (var submodule in project.coverage) {
+					console.log('SubModule ', JSON.stringify(submodule));
+
+					table.cell('Project', JSON.stringify(projectKey));
+					table.cell('Testable Lines (#)', submodule.totals.lines.found, leftAlign);
+					table.cell('Current (%)', parseFloat(submodule.totals.lines.percent), leftAlignPercent);
+					//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
+					//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
+					table.cell('Health', health, leftAlign);
+					table.newRow()
+				}
 			}
 		}
 	}
