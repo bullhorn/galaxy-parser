@@ -50,7 +50,7 @@ function getProjectTable(projects) {
 			 symbol = '+';
 			 }*/
 
-			console.log('First module', project.coverage[0]);
+			console.log('First module', project.coverage[1]);
 			if(project.coverage) {
 				for (var submodule in project.coverage) {
 					console.log('SubModule ', submodule);
