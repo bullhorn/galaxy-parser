@@ -36,9 +36,11 @@ function getProjectTable(projects) {
 
 			var project = projects[projectKey];
 
-			console.log('Project Key', JSON.stringify(projectKey));
+			console.log('Project Key ', JSON.stringify(projectKey));
 
-			console.log('Object', JSON.stringify(project));
+			console.log('Object ', JSON.stringify(project));
+
+			console.log('Coverage ', JSON.stringify(project.coverage));
 			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
 			//var higher = delta > 0;
 			var symbol = '';
@@ -54,7 +56,7 @@ function getProjectTable(projects) {
 			 symbol = '+';
 			 }*/
 
-			if(project.totals) {
+			if(project.coverage) {
 				table.cell('Project', JSON.stringify(projectKey));
 				table.cell('Testable Lines (#)', project.totals.lines.found, leftAlign);
 				table.cell('Current (%)', parseFloat(project.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
