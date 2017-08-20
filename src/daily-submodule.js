@@ -55,8 +55,8 @@ function getProjectTable(projects) {
 					table.cell('Project', submodule.replace(/-/g, ' ').toLowerCase().split(' ').map(function(word) {
 						return word.replace(word[0], word[0].toUpperCase());
 					}).join(' '));
-					table.cell('Testable Lines (#)', project.coverage[submodule].totals.lines.found, leftAlign);
-					table.cell('Current (%)', parseFloat(project.coverage[submodule].totals.lines.percent), leftAlignPercent);
+					table.cell('Testable Lines (#)', project.coverage[submodule].totals.lines.found);
+					table.cell('Current (%)', parseFloat(project.coverage[submodule].totals.lines.percent) + '%');
 					//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
 					//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
 					//table.cell('Health', health, leftAlign);
