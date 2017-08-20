@@ -32,13 +32,13 @@ function getProjectTable(projects) {
 
 	// Setup the table
 	for (var projectKey in projects) {
-		if(!JSON.stringify(projectKey).includes("byModule") && !JSON.stringify(projectKey).includes("commit")) {
+		if(JSON.stringify(projectKey).includes("byModule")) {
 
 			var project = projects[projectKey];
 
 			console.log('Project Key', JSON.stringify(projectKey));
 
-			console.log('Coverage', JSON.stringify(project));
+			console.log('Object', JSON.stringify(project));
 			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
 			//var higher = delta > 0;
 			var symbol = '';
@@ -67,7 +67,6 @@ function getProjectTable(projects) {
 	}
 
 	// Sort on the coverage
-	console.log(JSON.stringify(table));
 	table.sort(['Current (%)|des']);
 	return '```' + table.toString() + '```';
 }
