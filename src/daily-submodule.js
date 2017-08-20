@@ -73,7 +73,7 @@ function getProjectTable(projects) {
  * Get the slack message for the summary
  */
 function getMessage(projects) {
-	var message = '*<http://metrics:9002|Daily Galaxy Report - Bullhorn Code Coverage Metrics>*\n';
+	var message = '*<http://metrics:9002|Daily Core Services Submodule Report - Bullhorn Code Coverage Metrics>*\n';
 	message += getProjectTable(projects);
 	message += '\n_Want your project on here? Consult the <https://github.com/jgodi/galaxy-parser/blob/master/README.md|Galaxy Parser> to learn how!_';
 	message += '\n_Is your project missing? Contact Joshua Godi for assistance_';
@@ -96,10 +96,12 @@ export default function (FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
 			if (SLACK_HOOK && SLACK_CHANNEL) {
 				// Create a slack message based on the results
 				var message = {
-					text: getMessage(projects),
-					channel: SLACK_CHANNEL,
-					username: 'Galaxy',
-					icon_url: 'https://67.media.tumblr.com/avatar_975d849db99f_128.png'
+					attachments: [{
+						text: getMessage(projects),
+						channel: SLACK_CHANNEL,
+						username: 'Galaxy',
+						icon_url: 'https://67.media.tumblr.com/avatar_975d849db99f_128.png'
+					}]
 				};
 				request.post('https://hooks.slack.com/services/' + SLACK_HOOK, {
 					json: message
