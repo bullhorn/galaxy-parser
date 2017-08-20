@@ -32,13 +32,13 @@ function getProjectTable(projects) {
 
 	// Setup the table
 	for (var projectKey in projects) {
-		if(!JSON.stringify(projectKey).includes("byModule") && !JSON.stringify(projectKey).includes("commit")) {
+		if(!JSON.stringify(projectKey).includes("byModule") && !JSON.stringify(projectKey).includes("commit") && !JSON.stringify(projectKey).includes("coverage")) {
 
 			var project = projects[projectKey];
 
 			console.log('Project Key', JSON.stringify(projectKey));
 
-			console.log('Totals', JSON.stringify(project.coverage.totals));
+			console.log('Totals', JSON.stringify(project.coverage.testableLines));
 			//var delta = project.coverage.totals.lines.percent - project.coverage.last;
 			//var higher = delta > 0;
 			var symbol = '';
@@ -54,10 +54,10 @@ function getProjectTable(projects) {
 			 symbol = '+';
 			 }*/
 
-			if(project.coverage.totals) {
+			if(project.totals) {
 				table.cell('Project', JSON.stringify(projectKey));
-				table.cell('Testable Lines (#)', project.coverage.totals.lines.found, leftAlign);
-				table.cell('Current (%)', parseFloat(project.coverage.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
+				table.cell('Testable Lines (#)', project.totals.lines.found, leftAlign);
+				table.cell('Current (%)', parseFloat(project.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
 				//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
 				//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
 				table.cell('Health', health, leftAlign);
