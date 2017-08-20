@@ -32,7 +32,7 @@ function getProjectTable(projects) {
 
 	// Setup the table
 	for (var projectKey in projects) {
-		if(!JSON.stringify(projectKey).includes("byModule") || !JSON.stringify(projectKey).includes("coverage")) {
+		if(!JSON.stringify(projectKey).includes("byModule") && !JSON.stringify(projectKey).includes("coverage")) {
 
 			var project = projects[projectKey];
 
@@ -54,13 +54,15 @@ function getProjectTable(projects) {
 			 symbol = '+';
 			 }*/
 
-			table.cell('Project', JSON.stringify(projectKey));
-			table.cell('Testable Lines (#)', project.coverage.totals.lines.found, leftAlign);
-			table.cell('Current (%)', parseFloat(project.coverage.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
-			//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
-			//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
-			table.cell('Health', health, leftAlign);
-			table.newRow()
+			if(project.coverage.totals) {
+				table.cell('Project', JSON.stringify(projectKey));
+				table.cell('Testable Lines (#)', project.coverage.totals.lines.found, leftAlign);
+				table.cell('Current (%)', parseFloat(project.coverage.totals.lines.percent).toFixed(project.precision), leftAlignPercent);
+				//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
+				//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
+				table.cell('Health', health, leftAlign);
+				table.newRow()
+			}
 		}
 	}
 
