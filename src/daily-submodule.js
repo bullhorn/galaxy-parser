@@ -60,11 +60,11 @@ function getProjectTable(projects) {
 				for (var submodule in project.coverage) {
 					console.log('SubModule ', JSON.stringify(submodule));
 
-					console.log('Totals', JSON.stringify(submodule.totals));
+					//console.log('Totals', JSON.stringify(submodule.totals));
 
 					table.cell('Project', JSON.stringify(submodule));
-					table.cell('Testable Lines (#)', submodule.totals.lines.found, leftAlign);
-					table.cell('Current (%)', parseFloat(submodule.totals.lines.percent), leftAlignPercent);
+					//table.cell('Testable Lines (#)', submodule.totals.lines.found, leftAlign);
+					//table.cell('Current (%)', parseFloat(submodule.totals.lines.percent), leftAlignPercent);
 					//table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
 					//table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
 					table.cell('Health', health, leftAlign);
