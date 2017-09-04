@@ -4,6 +4,7 @@ import program from 'commander';
 // APP
 import analyze from './analyze';
 import dailySlackMessage from './daily-report';
+import dailyCSMessage from './daily-submodule';
 import analyzeMr from './analyze-mr';
 
 program
@@ -22,6 +23,13 @@ program
     .action((...args) => {
         dailySlackMessage(args[0], args[1], args[2]);
     });
+
+program
+	.command('cs-report [firebase] [slackHook] [slackChannel]')
+	.description('Daily report for cs into Slack')
+	.action((...args) => {
+		dailyCSMessage(args[0], args[1], args[2]);
+	});
 
 program
     .command('analyze-mr [branch] [firebase] [slackHook] [slackChannel] [apiKey]')
