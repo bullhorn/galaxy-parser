@@ -1,6 +1,6 @@
 {
   "name": "galaxy-parser",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "description": "Analyzes your code metric reports and will parse the results into Galaxy",
   "preferGlobal": true,
   "scripts": {

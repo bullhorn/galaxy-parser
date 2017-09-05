@@ -141,7 +141,7 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
             for (var submodule in projectData.byModule.coverage) {
                 projectData.byModule.coverage[submodule].coverage = {
                     last: projectData.byModule.coverage[submodule].totals.lines.percent,
-                    highest: parsed.byModule.coverage[submodule].totals.lines.percent > projectData.byModule.coverage[submodule].highest ? parsed.byModule.coverage[submodule].totals.lines.percent : projectData.byModule.coverage[submodule].highest
+                    highest: parsed.byModule.coverage[submodule].totals.lines.percent > projectData.byModule.coverage[submodule].coverage.highest ? parsed.byModule.coverage[submodule].totals.lines.percent : projectData.byModule.coverage[submodule].coverage.highest
                 }
             }
         } else {
