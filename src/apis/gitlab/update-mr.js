@@ -3,31 +3,26 @@ import gitlab from 'node-gitlab';
 // APP
 import generateMarkdownMessage from '../generate-markdown-message';
 
-function replaceComment(description, data, suitesToRun) {
+function replaceComment(description, data) {
     let start = description.indexOf('<!-- Galaxy MR Analyzer: START -->');
     let end = description.indexOf('<!-- Galaxy MR Analyzer: END -->') - 1;
     let endLength = '<!-- Galaxy MR Analyzer: END -->'.length;
     let newDescription = description.substring(0, start, end + endLength);
-    return newDescription + '\n' + generateMarkdownMessage(data, true, suitesToRun);
+    return newDescription + '\n' + generateMarkdownMessage(data, true);
 }
 
-function generateDescription(description, data, automationSuitesToRun) {
-    let suitesToRun = '';
-    if (automationSuitesToRun.length !== 0) {
-        suitesToRun += '#### Recommended Automation Suites';
-        suitesToRun += '\nBased on the changes you have pushed, you should run the following automation suites on your box:\n';
-        automationSuitesToRun.forEach(automation => {
-            suitesToRun += `* [${automation.suite}](${automation.link})\n`
-        });
+function generateDescription(description, data) {
+    if (data.files.length > 0) {
+        if (description.includes('<!-- Galaxy MR Analyzer: START -->')) {
+            return replaceComment(description, data);
+        } else {
+            return description + '\n\n' + generateMarkdownMessage(data, true);
+        }
     }
-    if (description.includes('<!-- Galaxy MR Analyzer: START -->')) {
-        return replaceComment(description, data, suitesToRun);
-    } else {
-        return description + '\n\n' + generateMarkdownMessage(data, true, suitesToRun);
-    }
+    return description;
 }
 
-async function updateMR(data, branch, url, gitlabProjectId, apiKey, automationSuitesToRun) {
+async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile) {
     const client = gitlab.createPromise({
         api: url,
         privateToken: apiKey,
@@ -45,27 +40,48 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, automationSu
     }));
 
     if (mr) {
-        let newLabel = '';
         let failingFiles = data.files.filter(file => !file.diff.pass);
-        let description = generateDescription(mr.description, data, automationSuitesToRun);
-        if (!data.coverage.pass || failingFiles.length !== 0) {
-            newLabel = 'Failed: Code Coverage';
+        let description = generateDescription(mr.description, data);
+        let passCoverage = data.coverage.pass && failingFiles.length === 0;
+        let labels = [];
+        let otherLabels = mr.labels.filter(label => !['Working: Dev', 'Working: QA', 'Pass: QA', 'Pass: Code Coverage', 'Failed: Code Coverage', 'Has Translations', 'Dev Work Complete'].includes(label));
+
+        if (mr.labels.length > 0) {
+            let checkLabels = {
+                dev: 'Working: Dev',
+                qa: 'Working: QA'
+            }
+            mr.labels.forEach(label => {
+                if (label === 'Working: Dev' || label === 'Dev Work Complete') {
+                    checkLabels.dev = label;
+                } else if (label === 'Working: QA' || label === 'Pass: QA') {
+                    checkLabels.qa = label;
+                }
+            });
+
+            labels = [checkLabels.dev, checkLabels.qa];
         } else {
-            newLabel = 'Pass: Code Coverage';
+            labels = ['Working: Dev', 'Working: QA'];
         }
-        if (mr.labels.indexOf('Failed: Code Coverage')) {
-            mr.labels.splice(mr.labels.indexOf('Failed: Code Coverage'), 1);
+
+        if (hasI18nFile) {
+            labels.push('Has Translations');
         }
-        if (mr.labels.indexOf('Pass: Code Coverage')) {
-            mr.labels.splice(mr.labels.indexOf('Pass: Code Coverage'), 1);
+        if (passCoverage) {
+            labels.push('Pass: Code Coverage');
+        } else {
+            labels.push('Failed: Code Coverage');
         }
+
+        labels.push(...otherLabels);
+
         client.mergeRequests.update({
             id: gitlabProjectId,
             merge_request_id: mr.id,
             description: description,
-            labels: mr.labels ? mr.labels.join(',') + `,${newLabel}` : newLabel
+            labels: labels.join(',')
         }).then((response) => {
-            console.log('[Galaxy Parser]: Update MR Success!', response);
+            console.log('[Galaxy Parser]: Update MR Success!');
         }).catch((err) => {
             throw err;
         });

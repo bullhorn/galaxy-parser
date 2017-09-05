@@ -5,8 +5,7 @@ function addEmoji(label, pass) {
 function generateMarkdownMessage(data, insertMarker, other) {
     let message = '';
     message += '<!-- Galaxy MR Analyzer: START -->\n\n';
-    message += `#### Overall Coverage Change: ${addEmoji(data.coverage.label, data.coverage.pass)}\n`;
-    message += '|File|Change|\n';
+    message += `|File (${data.files.length})|Change (${addEmoji(data.coverage.label, data.coverage.pass)})|\n`;
     message += '|---|---|\n';
     data.files.forEach(file => {
         message += `|${file.name}|${addEmoji(file.diff.label, file.diff.pass)}|\n`
