@@ -40,9 +40,9 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
     }));
 
     if (mr) {
-        let failingFiles = data.files.filter(file => !file.diff.pass);
+        let failingFiles = data.files.filter(file => file.diff && !file.diff.pass);
         let description = generateDescription(mr.description, data);
-        let passCoverage = data.coverage.pass && failingFiles.length === 0;
+        let passCoverage = data.coverage && data.coverage.pass && failingFiles.length === 0;
         let labels = [];
         let otherLabels = mr.labels.filter(label => !['Working: Dev', 'Working: QA', 'Pass: QA', 'Pass: Code Coverage', 'Failed: Code Coverage', 'Has Translations', 'Dev Work Complete', 'Pass: Dev'].includes(label));
 
