@@ -59,12 +59,8 @@ function getDiffLabel(current, last) {
             label: `+${Number(current - last).toFixed(GALAXY_SETTINGS.precision || 2)}%`,
             pass: true
         };
-    } else {
-        return {
-            label: 'No Change',
-            pass: true
-        };
     }
+    return null;
 }
 
 async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY) {
@@ -139,10 +135,7 @@ async function analyze(BRANCH, FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL, API_KEY)
                 let current = currentRunData[file] ? Number(currentRunData[file].lines) : 0;
                 overallCompare.files.push({
                     name: file,
-                    diff: currentRunData[file] ? getDiffLabel(current, last) : {
-                        label: 'Deleted',
-                        pass: true
-                    }
+                    diff: currentRunData[file] ? getDiffLabel(current, last) : null
                 });
             }
         });

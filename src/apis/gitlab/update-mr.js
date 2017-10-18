@@ -44,7 +44,7 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
         let description = generateDescription(mr.description, data);
         let passCoverage = data.coverage.pass && failingFiles.length === 0;
         let labels = [];
-        let otherLabels = mr.labels.filter(label => !['Working: Dev', 'Working: QA', 'Pass: QA', 'Pass: Code Coverage', 'Failed: Code Coverage', 'Has Translations', 'Dev Work Complete'].includes(label));
+        let otherLabels = mr.labels.filter(label => !['Working: Dev', 'Working: QA', 'Pass: QA', 'Pass: Code Coverage', 'Failed: Code Coverage', 'Has Translations', 'Dev Work Complete', 'Pass: Dev'].includes(label));
 
         if (mr.labels.length > 0) {
             let checkLabels = {
@@ -52,7 +52,7 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
                 qa: 'Working: QA'
             }
             mr.labels.forEach(label => {
-                if (label === 'Working: Dev' || label === 'Dev Work Complete') {
+                if (label === 'Working: Dev' || label === 'Dev Work Complete' || label === 'Pass: Dev') {
                     checkLabels.dev = label;
                 } else if (label === 'Working: QA' || label === 'Pass: QA') {
                     checkLabels.qa = label;
