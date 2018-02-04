@@ -54,7 +54,7 @@ function getDiffLabel(current, last) {
             label: `-${Number(last - current).toFixed(GALAXY_SETTINGS.precision || 2)}%`,
             pass: false
         };
-    } else if (current > last) {
+    } else if (current >= last) {
         return {
             label: `+${Number(current - last).toFixed(GALAXY_SETTINGS.precision || 2)}%`,
             pass: true
