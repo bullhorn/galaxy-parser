@@ -6,30 +6,30 @@ import generateMarkdownMessage from '../generate-markdown-message';
 const github = new GitHubApi();
 
 async function updatePR(data, branch, owner, repo, apikey) {
-    // TODO - make github app
-    await github.authenticate({
-        type: 'oauth',
-        token: apikey
-    });
+  // TODO - make github app
+  await github.authenticate({
+    type: 'oauth',
+    token: apikey,
+  });
 
-    let prs = await github.pullRequests.getAll({
-        owner: owner,
-        repo: repo,
-        state: 'open',
-        head: branch
+  let prs = await github.pullRequests.getAll({
+    owner: owner,
+    repo: repo,
+    state: 'open',
+    head: branch,
+  });
+  if (prs.data.length > 0) {
+    let number = prs.data[0].number;
+    console.error('[Galaxy Parser]: creating comment on PR');
+    github.issues.createComment({
+      owner: owner,
+      repo: repo,
+      number: number,
+      body: generateMarkdownMessage(data, false, null),
     });
-    if (prs.data.length > 0) {
-        let number = prs.data[0].number;
-        console.error('[Galaxy Parser]: creating comment on PR');
-        github.issues.createComment({
-            owner: owner,
-            repo: repo,
-            number: number,
-            body: generateMarkdownMessage(data, false, null)
-        });
-    } else {
-        console.error('[Galaxy Parser]: Unable to find PR for', branch);
-    }
+  } else {
+    console.error('[Galaxy Parser]: Unable to find PR for', branch);
+  }
 }
 
 export default updatePR;
