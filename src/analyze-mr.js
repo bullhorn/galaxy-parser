@@ -34,8 +34,8 @@ async function getGitDiff(base) {
   let developmentHead = shell.exec(`git merge-base origin/${base} HEAD`).stdout.replace('\n', '');
   let head = 'HEAD';
   return new Promise((resolve, reject) => {
-    console.error('[Galaxy Parser]: comparing branches', b, c);
-    simpleGit().diffSummary([b, c], (err, data) => {
+    console.error('[Galaxy Parser]: comparing branches', developmentHead, head);
+    simpleGit().diffSummary([developmentHead, head], (err, data) => {
       if (err) {
         throw err;
       }
