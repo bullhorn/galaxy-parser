@@ -2,7 +2,7 @@
 import request from 'request';
 import simpleGit from 'simple-git';
 import path from 'path';
-import shelljs from 'shelljs';
+import shell from 'shelljs';
 // APP
 import parse from './parse';
 import updatePR from './apis/github/update-pr';
