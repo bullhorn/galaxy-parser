@@ -1,6 +1,6 @@
 {
   "name": "galaxy-parser",
-  "version": "1.0.49",
+  "version": "1.0.50",
   "description": "Analyzes your code metric reports and will parse the results into Galaxy",
   "preferGlobal": true,
   "scripts": {
@@ -16,7 +16,13 @@
     "type": "git",
     "url": "git+https://github.com/jgodi/galaxy-parser"
   },
-  "keywords": ["galaxy", "static", "code", "analysis", "firebase"],
+  "keywords": [
+    "galaxy",
+    "static",
+    "code",
+    "analysis",
+    "firebase"
+  ],
   "author": "Joshua Godi <joshuagodi@gmail.com>",
   "license": "MIT",
   "bugs": {

@@ -161,6 +161,11 @@ async function analyze(FIREBASE_URL, SLACK_HOOK, SLACK_CHANNEL) {
     // Upload to firebase
     // Send the project back to firebase
     console.log('[Galaxy Parser] - Pushing %j', projectData);
+    // Remove any scoped packages for the URL
+    let pkg = packageJSON.name;
+    if (pkg.startsWith('@')) {
+      pkg = pkg.split('/')[1];
+    }
     request.put(
       'https://' + FIREBASE_URL + '/projects/' + packageJSON.name + '.json',
       {

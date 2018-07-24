@@ -32,27 +32,31 @@ function getProjectTable(projects) {
 
   // Setup the table
   for (var projectKey in projects) {
-    var project = projects[projectKey];
-    var delta = project.coverage.current - project.coverage.last;
-    var higher = delta > 0;
-    var symbol = '';
-    var health = 'stable';
-    if (delta < 0) {
-      delta *= -1;
-      health = 'poor';
-      symbol = '-';
-    } else if (delta > 0) {
-      health = 'great!';
-      symbol = '+';
-    }
+    try {
+      var project = projects[projectKey];
+      var delta = project.coverage.current - project.coverage.last;
+      var higher = delta > 0;
+      var symbol = '';
+      var health = 'stable';
+      if (delta < 0) {
+        delta *= -1;
+        health = 'poor';
+        symbol = '-';
+      } else if (delta > 0) {
+        health = 'great!';
+        symbol = '+';
+      }
 
-    table.cell('Project', project.displayName);
-    table.cell('Testable Lines (#)', project.coverage.testableLines, leftAlign);
-    table.cell('Current (%)', parseFloat(project.coverage.current).toFixed(project.precision), leftAlignPercent);
-    table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
-    table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
-    table.cell('Health', health, leftAlign);
-    table.newRow();
+      table.cell('Project', project.displayName);
+      table.cell('Testable Lines (#)', project.coverage.testableLines, leftAlign);
+      table.cell('Current (%)', parseFloat(project.coverage.current).toFixed(project.precision), leftAlignPercent);
+      table.cell('Highest (%)', parseFloat(project.coverage.highest).toFixed(project.precision), leftAlignPercent);
+      table.cell('Delta', symbol + parseFloat(delta).toFixed(project.precision), leftAlignPercent);
+      table.cell('Health', health, leftAlign);
+      table.newRow();
+    } catch (error) {
+      // no op
+    }
   }
 
   // Sort on the coverage
