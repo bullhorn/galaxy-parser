@@ -24,7 +24,7 @@ The *bare* minimum to report into galaxy is to have code coverage reporting in o
 *NOTE:* The `package.json` `name` field is used as the key. Keep it all lower-case with no spaces. I.E `my-project` or `myProject`.
 
 2) Add an entry to the `package.json` for `galaxy`
-
+```
     "galaxy": {
         "display": "My Project", // display name for galaxy (defaults to package.json name)
         "type": "javascript", // type of the project that we are reporting on (javascript|java|php)
@@ -42,7 +42,7 @@ The *bare* minimum to report into galaxy is to have code coverage reporting in o
           ]
         }
     }
-
+```
 *NOTE:* Projects will only have *one (1)* code coverage metric, either `lcov` or `jacoco` at this point in time!
 
 3) Add some scripts to your `package.json` to manage run the report
