@@ -72,7 +72,6 @@ function getMessage(projects) {
   message += getProjectTable(projects);
   message +=
     '\n_Want your project on here? Consult the <https://github.com/jgodi/galaxy-parser/blob/master/README.md|Galaxy Parser> to learn how!_';
-  message += '\n_Is your project missing? Contact Chris Erxleben for assistance_';
   return message;
 }
 
