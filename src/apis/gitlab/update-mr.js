@@ -44,6 +44,9 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
     let description = generateDescription(mr.description, data);
     let passCoverage = data.coverage && data.coverage.pass && failingFiles.length === 0;
     let labels = [];
+    let clearedLabels = mr.labels.filter(function (label) {
+        return ['Pass: Code Coverage', 'Failed: Code Coverage'].includes(label);
+    });
     let otherLabels = mr.labels.filter(
       label =>
         ![
@@ -74,6 +77,17 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
     });
 
     if (mr.labels.length > 0) {
+        // Fix issue with overriding labels in GitLab. Removes either or both Code Coverage labels
+
+        if (clearedLabels) {
+            client.mergeRequests.update({
+                id: gitlabProjectId,
+                merge_request_id: mr.id,
+                description: description,
+                labels: clearedLabels.join(',')
+            });
+        }
+
       let checkLabels = {
         dev: 'Working: Dev',
         qa: 'Working: QA',
