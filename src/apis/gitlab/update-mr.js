@@ -44,9 +44,9 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
     let description = generateDescription(mr.description, data);
     let passCoverage = data.coverage && data.coverage.pass && failingFiles.length === 0;
     let labels = [];
-    let clearedLabels = mr.labels.filter(function (label) {
-        return ['Pass: Code Coverage', 'Failed: Code Coverage'].includes(label);
-    });
+    let clearedLabels = mr.labels.filter(
+        label => ['Pass: Code Coverage', 'Failed: Code Coverage'].includes(label),
+    );
     let otherLabels = mr.labels.filter(
       label =>
         ![
