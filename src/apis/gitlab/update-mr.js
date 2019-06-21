@@ -79,7 +79,7 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
     if (mr.labels.length > 0) {
         // Fix issue with overriding labels in GitLab. Removes either or both Code Coverage labels
 
-        if (clearedLabels) {
+        if (clearedLabels && clearedLabels.length) {
             client.mergeRequests.update({
                 id: gitlabProjectId,
                 merge_request_id: mr.id,
