@@ -119,7 +119,7 @@ async function updateMR(data, branch, url, gitlabProjectId, apiKey, hasI18nFile)
     client.mergeRequests
       .update({
         id: gitlabProjectId,
-        merge_request_id: mr.id,
+        merge_request_id: mr.iid,
         description: description,
         labels: labels.join(','),
       })
