@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/bullhorn/galaxy-parser#README",
   "dependencies": {
-    "async": "^2.0.1",
+    "async": "^3.2.2",
     "commander": "^2.9.0",
     "easy-table": "^1.0.0",
     "github": "^9.2.0",
