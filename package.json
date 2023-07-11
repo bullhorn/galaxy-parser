@@ -36,7 +36,7 @@
     "async": "^2.0.1",
     "commander": "^2.9.0",
     "easy-table": "^1.0.0",
-    "github": "^9.2.0",
+    "github": "^14.0.0",
     "lcov-parse": "0.0.10",
     "node-gitlab": "^1.6.0",
     "request": "^2.74.0",
